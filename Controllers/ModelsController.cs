@@ -145,6 +145,7 @@ namespace TestTask.Controllers
             }
 
             var model = await _context.Models
+                .Include(e => e.Brand)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (model == null)
             {
