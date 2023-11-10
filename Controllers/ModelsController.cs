@@ -75,6 +75,9 @@ namespace TestTask.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Brands = (await _context.Brands.ToListAsync())
+                .Select(i => new SelectListItem(i.Name, i.Id.ToString()));
             return View(model);
         }
 

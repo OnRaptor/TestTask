@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using TestTask.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,5 +24,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Brands}/{action=Index}/{id?}");
+
+
+//Uncomment to add test data
+/*using (var scope = app.Services.CreateScope())
+    TestData.Seed(scope.ServiceProvider.GetRequiredService<DataContext>());*/
 
 app.Run();
