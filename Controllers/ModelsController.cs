@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TestTask.Data;
 using TestTask.Data.Models;
+using TestTask.Models;
 
 namespace TestTask.Controllers
 {
@@ -22,9 +23,16 @@ namespace TestTask.Controllers
         // GET: Models
         public async Task<IActionResult> Index()
         {
-            return _context.Models != null ?
-                        View(await _context.Models.Include(e => e.Brand).ToListAsync()) :
-                        Problem("Entity set 'DataContext.Models'  is null.");
+            if (_context.Models == null)
+                return Problem("Entity set 'DataContext.Models'  is null.");
+            else
+                return View(_context.Brands.ToList().Select
+                        (brand => new ModelGroup 
+                            {
+                                Brand = brand,
+                                Models = _context.Models.ToList().Where(model => model.Brand.Id == brand.Id).ToList()
+                            })
+                        );
         }
 
         // GET: Models/Details/5
@@ -36,6 +44,7 @@ namespace TestTask.Controllers
             }
 
             var model = await _context.Models
+                .Include(model => model.Brand)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (model == null)
             {
